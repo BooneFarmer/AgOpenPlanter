@@ -43,7 +43,6 @@ namespace AOGPlanterV2.OldFarmer
             nUDPopulation = new NumericUpDown();
             nudRowSpacing = new NumericUpDown();
             nudPlantingSpeed = new NumericUpDown();
-            lblNumRows = new Label();
             btnPlanterMonitorActive = new Button();
             btnSeedAlarm = new Button();
             btnSendPlanterConfigPGN = new Button();
@@ -58,10 +57,12 @@ namespace AOGPlanterV2.OldFarmer
             label4 = new Label();
             lblCurDoubleFactor = new Label();
             btnPlanterSimulator = new Button();
+            numRows = new NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)nUDPopulation).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudRowSpacing).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudPlantingSpeed).BeginInit();
             ((System.ComponentModel.ISupportInitialize)nudPlanterDoublesFactor).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numRows).BeginInit();
             SuspendLayout();
             // 
             // label1
@@ -151,7 +152,7 @@ namespace AOGPlanterV2.OldFarmer
             nUDPopulation.Name = "nUDPopulation";
             nUDPopulation.Size = new Size(136, 38);
             nUDPopulation.TabIndex = 214;
-            nUDPopulation.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nUDPopulation.Value = new decimal(new int[] { 32500, 0, 0, 0 });
             nUDPopulation.ValueChanged += nudPopulation_ValueChanged;
             nUDPopulation.Click += nudPopulation_Click;
             // 
@@ -159,13 +160,14 @@ namespace AOGPlanterV2.OldFarmer
             // 
             nudRowSpacing.DecimalPlaces = 1;
             nudRowSpacing.Font = new Font("Microsoft Sans Serif", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            nudRowSpacing.Increment = new decimal(new int[] { 1, 0, 0, 65536 });
             nudRowSpacing.Location = new Point(385, 283);
             nudRowSpacing.Margin = new Padding(4, 3, 4, 3);
             nudRowSpacing.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             nudRowSpacing.Name = "nudRowSpacing";
             nudRowSpacing.Size = new Size(136, 38);
             nudRowSpacing.TabIndex = 215;
-            nudRowSpacing.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            nudRowSpacing.Value = new decimal(new int[] { 30, 0, 0, 0 });
             nudRowSpacing.ValueChanged += nudRowSpacing_valueChanged;
             nudRowSpacing.Click += nudRowSpacing_Clicked;
             // 
@@ -179,22 +181,9 @@ namespace AOGPlanterV2.OldFarmer
             nudPlantingSpeed.Name = "nudPlantingSpeed";
             nudPlantingSpeed.Size = new Size(136, 38);
             nudPlantingSpeed.TabIndex = 216;
+            nudPlantingSpeed.Value = new decimal(new int[] { 45, 0, 0, 65536 });
             nudPlantingSpeed.ValueChanged += nudPlantingSpeed_ValueChanged;
             nudPlantingSpeed.Click += nudPlantingSpeed_Clicked;
-            // 
-            // lblNumRows
-            // 
-            lblNumRows.AutoSize = true;
-            lblNumRows.BackColor = SystemColors.ButtonShadow;
-            lblNumRows.Font = new Font("Microsoft Sans Serif", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            lblNumRows.ForeColor = SystemColors.ActiveCaptionText;
-            lblNumRows.ImageAlign = ContentAlignment.MiddleLeft;
-            lblNumRows.Location = new Point(378, 531);
-            lblNumRows.Margin = new Padding(4, 0, 4, 0);
-            lblNumRows.Name = "lblNumRows";
-            lblNumRows.Size = new Size(46, 31);
-            lblNumRows.TabIndex = 218;
-            lblNumRows.Text = "15";
             // 
             // btnPlanterMonitorActive
             // 
@@ -254,55 +243,60 @@ namespace AOGPlanterV2.OldFarmer
             // lblCurPopulation
             // 
             lblCurPopulation.AutoSize = true;
+            lblCurPopulation.Font = new Font("Segoe UI", 15.75F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblCurPopulation.ForeColor = Color.LightGreen;
             lblCurPopulation.Location = new Point(147, 257);
             lblCurPopulation.Margin = new Padding(4, 0, 4, 0);
             lblCurPopulation.Name = "lblCurPopulation";
-            lblCurPopulation.Size = new Size(13, 15);
+            lblCurPopulation.Size = new Size(24, 30);
             lblCurPopulation.TabIndex = 504;
             lblCurPopulation.Text = "0";
             // 
             // lblCurRowWidth
             // 
             lblCurRowWidth.AutoSize = true;
+            lblCurRowWidth.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblCurRowWidth.ForeColor = Color.LightGreen;
             lblCurRowWidth.Location = new Point(147, 339);
             lblCurRowWidth.Margin = new Padding(4, 0, 4, 0);
             lblCurRowWidth.Name = "lblCurRowWidth";
-            lblCurRowWidth.Size = new Size(13, 15);
+            lblCurRowWidth.Size = new Size(22, 25);
             lblCurRowWidth.TabIndex = 505;
             lblCurRowWidth.Text = "0";
             // 
             // lblCurTargetSpeed
             // 
             lblCurTargetSpeed.AutoSize = true;
+            lblCurTargetSpeed.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblCurTargetSpeed.ForeColor = Color.LightGreen;
             lblCurTargetSpeed.Location = new Point(147, 407);
             lblCurTargetSpeed.Margin = new Padding(4, 0, 4, 0);
             lblCurTargetSpeed.Name = "lblCurTargetSpeed";
-            lblCurTargetSpeed.Size = new Size(13, 15);
+            lblCurTargetSpeed.Size = new Size(22, 25);
             lblCurTargetSpeed.TabIndex = 506;
             lblCurTargetSpeed.Text = "0";
             // 
             // lblCurNumSections
             // 
             lblCurNumSections.AutoSize = true;
+            lblCurNumSections.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblCurNumSections.ForeColor = Color.LightGreen;
             lblCurNumSections.Location = new Point(147, 576);
             lblCurNumSections.Margin = new Padding(4, 0, 4, 0);
             lblCurNumSections.Name = "lblCurNumSections";
-            lblCurNumSections.Size = new Size(13, 15);
+            lblCurNumSections.Size = new Size(22, 25);
             lblCurNumSections.TabIndex = 507;
             lblCurNumSections.Text = "0";
             // 
             // label2
             // 
             label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             label2.ForeColor = Color.LightGreen;
-            label2.Location = new Point(79, 257);
+            label2.Location = new Point(63, 257);
             label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new Size(47, 15);
+            label2.Size = new Size(76, 25);
             label2.TabIndex = 508;
             label2.Text = "Current";
             // 
@@ -323,14 +317,14 @@ namespace AOGPlanterV2.OldFarmer
             nudPlanterDoublesFactor.DecimalPlaces = 2;
             nudPlanterDoublesFactor.Font = new Font("Microsoft Sans Serif", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             nudPlanterDoublesFactor.Increment = new decimal(new int[] { 1, 0, 0, 131072 });
-            nudPlanterDoublesFactor.Location = new Point(201, 440);
+            nudPlanterDoublesFactor.Location = new Point(195, 448);
             nudPlanterDoublesFactor.Margin = new Padding(4, 3, 4, 3);
             nudPlanterDoublesFactor.Maximum = new decimal(new int[] { 55, 0, 0, 131072 });
             nudPlanterDoublesFactor.Minimum = new decimal(new int[] { 1, 0, 0, 131072 });
             nudPlanterDoublesFactor.Name = "nudPlanterDoublesFactor";
             nudPlanterDoublesFactor.Size = new Size(140, 38);
             nudPlanterDoublesFactor.TabIndex = 510;
-            nudPlanterDoublesFactor.Value = new decimal(new int[] { 55, 0, 0, 131072 });
+            nudPlanterDoublesFactor.Value = new decimal(new int[] { 49, 0, 0, 131072 });
             nudPlanterDoublesFactor.ValueChanged += numericUpDown1_ValueChanged;
             nudPlanterDoublesFactor.Click += nudPlanterDoublesFactor_clicked;
             // 
@@ -350,11 +344,12 @@ namespace AOGPlanterV2.OldFarmer
             // lblCurDoubleFactor
             // 
             lblCurDoubleFactor.AutoSize = true;
+            lblCurDoubleFactor.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             lblCurDoubleFactor.ForeColor = Color.LightGreen;
             lblCurDoubleFactor.Location = new Point(150, 501);
             lblCurDoubleFactor.Margin = new Padding(4, 0, 4, 0);
             lblCurDoubleFactor.Name = "lblCurDoubleFactor";
-            lblCurDoubleFactor.Size = new Size(13, 15);
+            lblCurDoubleFactor.Size = new Size(22, 25);
             lblCurDoubleFactor.TabIndex = 512;
             lblCurDoubleFactor.Text = "0";
             // 
@@ -371,12 +366,26 @@ namespace AOGPlanterV2.OldFarmer
             btnPlanterSimulator.UseVisualStyleBackColor = false;
             btnPlanterSimulator.Click += SimulatorClicked;
             // 
+            // numRows
+            // 
+            numRows.Font = new Font("Microsoft Sans Serif", 20.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            numRows.Location = new Point(385, 544);
+            numRows.Maximum = new decimal(new int[] { 32, 0, 0, 0 });
+            numRows.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numRows.Name = "numRows";
+            numRows.Size = new Size(120, 38);
+            numRows.TabIndex = 514;
+            numRows.Value = new decimal(new int[] { 8, 0, 0, 0 });
+            numRows.ValueChanged += NumRows_Changed;
+            numRows.Click += numRowsClick;
+            // 
             // FormArduinoSettings
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(50, 50, 70);
             ClientSize = new Size(933, 689);
+            Controls.Add(numRows);
             Controls.Add(btnPlanterSimulator);
             Controls.Add(lblCurDoubleFactor);
             Controls.Add(label4);
@@ -391,7 +400,6 @@ namespace AOGPlanterV2.OldFarmer
             Controls.Add(btnSendPlanterConfigPGN);
             Controls.Add(btnSeedAlarm);
             Controls.Add(btnPlanterMonitorActive);
-            Controls.Add(lblNumRows);
             Controls.Add(nudPlantingSpeed);
             Controls.Add(nudRowSpacing);
             Controls.Add(nUDPopulation);
@@ -409,6 +417,7 @@ namespace AOGPlanterV2.OldFarmer
             ((System.ComponentModel.ISupportInitialize)nudRowSpacing).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudPlantingSpeed).EndInit();
             ((System.ComponentModel.ISupportInitialize)nudPlanterDoublesFactor).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numRows).EndInit();
             ResumeLayout(false);
             PerformLayout();
 
@@ -425,7 +434,6 @@ namespace AOGPlanterV2.OldFarmer
 		private System.Windows.Forms.NumericUpDown nUDPopulation;
 		private System.Windows.Forms.NumericUpDown nudRowSpacing;
 		private System.Windows.Forms.NumericUpDown nudPlantingSpeed;
-		private System.Windows.Forms.Label lblNumRows;
 		private System.Windows.Forms.Button btnPlanterMonitorActive;
 		private System.Windows.Forms.Button btnSeedAlarm;
 		private System.Windows.Forms.Button btnSendPlanterConfigPGN;
@@ -440,5 +448,6 @@ namespace AOGPlanterV2.OldFarmer
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Label lblCurDoubleFactor;
 		private System.Windows.Forms.Button btnPlanterSimulator;
-	}
+        private NumericUpDown numRows;
+    }
 }

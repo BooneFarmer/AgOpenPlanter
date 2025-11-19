@@ -1,20 +1,13 @@
-using AOGPlanterV2;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
 namespace AOGPlanterV2.OldFarmer
 //namespace AOGPlanterV2
 {
     public partial class FormArduinoSettings : Form
     {
-        private NumericUpDown numericUpDown1;
+        private NumericUpDown nudUpDown;
+
+//        public float numberOfRows = 1;
+        private AOPUDP udp = null;
+        //private FormArduinoSettings fas = null;
 
         /// <summary>
         /// ///
@@ -24,30 +17,30 @@ namespace AOGPlanterV2.OldFarmer
         {
             mf = callingForm as FormAOP;
             InitializeComponent();
-            numericUpDown1 = new NumericUpDown();
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).BeginInit();
+            nudUpDown = new NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)nudUpDown).BeginInit();
             SuspendLayout();
             // 
             // numericUpDown1
             // 
-            numericUpDown1.DecimalPlaces = 2;
-            numericUpDown1.Location = new Point(50, 30);
-            numericUpDown1.Maximum = new decimal(new int[] { 210000, 0, 0, 0 });
-            numericUpDown1.Minimum = new decimal(new int[] { 1000, 0, 0, 0 });
-            numericUpDown1.Name = "numericUpDown1";
-            numericUpDown1.Size = new Size(120, 23);
-            numericUpDown1.TabIndex = 0;
-            numericUpDown1.Value = new decimal(new int[] { 10, 0, 0, 0 });
+            nudUpDown.DecimalPlaces = 2;
+            nudUpDown.Location = new Point(50, 30);
+            nudUpDown.Maximum = new decimal(new int[] { 32, 0, 0, 0 });
+            nudUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudUpDown.Name = "numericUpDown1";
+            nudUpDown.Size = new Size(120, 23);
+            nudUpDown.TabIndex = 0;
+            nudUpDown.Value = new decimal(new int[] { 10, 0, 0, 0 });
             // numericUpDown1.Click += btnNumericUpDown;
             // 
             // Inputs
             // 
             // ClientSize = new Size(300, 150);
-            Controls.Add(numericUpDown1);
+            Controls.Add(nudUpDown);
             Name = "Inputs";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Inputs";
-            ((System.ComponentModel.ISupportInitialize)numericUpDown1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudUpDown).EndInit();
             ResumeLayout(false);
 
         }/// 
@@ -60,13 +53,13 @@ namespace AOGPlanterV2.OldFarmer
         private void Form1_Load(object sender, EventArgs e)
         {
             //			nUDPopulation.Value = (decimal)mf.rc.rcTargetPopulation;
-            numericUpDown1.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterTargetPopulation;
+            numRows.Value = (int)AOGPlanterV2.Properties.Settings.Default.setPlanterNumRows;
             nUDPopulation.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterTargetPopulation;
             nudRowSpacing.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterRowWidth;
             nudPlantingSpeed.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterSpeed;
             nudPlanterDoublesFactor.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterDoublesFactor;
-            int numberOfSections = AOGPlanterV2.Properties.Settings.Default.setVehicle_numSections;
-            lblNumRows.Text = numberOfSections.ToString();
+            //            int numberOfSections = AOGPlanterV2.Properties.Settings.Default.setPlanterNumRows;
+            //            nudUpDown.Value = numberOfSections; // AOGPlanterV2.Properties.Settings.Default.setPlanterNumRows;
             lblCurNumSections.Text = mf.rc.fbNumSections.ToString();
             lblCurPopulation.Text = mf.rc.fbTargetPopulation.ToString();
             lblCurRowWidth.Text = mf.rc.fbRowWidth.ToString("N1");
@@ -132,24 +125,24 @@ namespace AOGPlanterV2.OldFarmer
 
         private void nudPopulation_Click(object sender, EventArgs e)
         {
-            using (var keypad = new NumericKeypad(numericUpDown1.Value))
+            using (var keypad = new NumericKeypad(nudUpDown.Value))
             {
-                numericUpDown1.DecimalPlaces = 1;
-                numericUpDown1.Location = new Point(50, 30);
-                numericUpDown1.Maximum = new decimal(new int[] { 210000, 0, 0, 0 });
-                numericUpDown1.Minimum = new decimal(new int[] { 1000, 0, 0, 0 });
-                numericUpDown1.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterTargetPopulation;
+                nudUpDown.DecimalPlaces = 1;
+                nudUpDown.Location = new Point(50, 30);
+                nudUpDown.Maximum = new decimal(new int[] { 210000, 0, 0, 0 });
+                nudUpDown.Minimum = new decimal(new int[] { 1000, 0, 0, 0 });
+                nudUpDown.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterTargetPopulation;
                 var result = keypad.ShowDialog(); // Show keypad
 
                 if (result == DialogResult.OK)
                 {
-                    numericUpDown1.Value = keypad.Result;
+                    nudUpDown.Value = keypad.Result;
                 }
 
                 // Always return focus to numericUpDown1
                 //  numericUpDown1.Focus();
-                nUDPopulation.Value = numericUpDown1.Value;
-                Properties.Settings.Default.setPlanterTargetPopulation = (float)numericUpDown1.Value;
+                nUDPopulation.Value = nudUpDown.Value;
+                Properties.Settings.Default.setPlanterTargetPopulation = (float)nudUpDown.Value;
                 btnSavePlanterSettings.Focus();
             }
         }
@@ -165,25 +158,25 @@ namespace AOGPlanterV2.OldFarmer
 
         private void nudRowSpacing_Clicked(object sender, EventArgs e)
         {
-                numericUpDown1.DecimalPlaces = 1;
-                numericUpDown1.Location = new Point(50, 30);
-                numericUpDown1.Maximum = new decimal(new int[] { 200, 0, 0, 0 });
-                numericUpDown1.Minimum = new decimal(new int[] { 0, 0, 0, 0 });
-//                numericUpDown1.Minimum = new float.Single(new float[] { .1f, 0, 0, 0 });
-            numericUpDown1.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterRowWidth;
-            using (var keypad = new NumericKeypad(numericUpDown1.Value))
+            nudUpDown.DecimalPlaces = 1;
+            nudUpDown.Location = new Point(50, 30);
+            nudUpDown.Maximum = new decimal(new int[] { 200, 0, 0, 0 });
+            nudUpDown.Minimum = new decimal(new int[] { 0, 0, 0, 0 });
+            //                numericUpDown1.Minimum = new float.Single(new float[] { .1f, 0, 0, 0 });
+            nudUpDown.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterRowWidth;
+            using (var keypad = new NumericKeypad(nudUpDown.Value))
             {
                 var result = keypad.ShowDialog(); // Show keypad
 
                 if (result == DialogResult.OK)
                 {
-                    numericUpDown1.Value = keypad.Result;
+                    nudUpDown.Value = keypad.Result;
                 }
 
                 // Always return focus to numericUpDown1
                 //  numericUpDown1.Focus();
-                nudRowSpacing.Value = numericUpDown1.Value;
-                Properties.Settings.Default.setPlanterRowWidth = (float)numericUpDown1.Value;
+                nudRowSpacing.Value = nudUpDown.Value;
+                Properties.Settings.Default.setPlanterRowWidth = (float)nudUpDown.Value;
                 btnSavePlanterSettings.Focus();
             }
         }
@@ -197,24 +190,24 @@ namespace AOGPlanterV2.OldFarmer
 
         private void nudPlantingSpeed_Clicked(object sender, EventArgs e)
         {
-            numericUpDown1.DecimalPlaces = 1;
-            numericUpDown1.Location = new Point(50, 30);
-            numericUpDown1.Maximum = new decimal(new int[] { 50, 0, 0, 0 });
-            numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            numericUpDown1.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterSpeed;
-            using (var keypad = new NumericKeypad(numericUpDown1.Value))
+            nudUpDown.DecimalPlaces = 1;
+            nudUpDown.Location = new Point(50, 30);
+            nudUpDown.Maximum = new decimal(new int[] { 50, 0, 0, 0 });
+            nudUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudUpDown.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterSpeed;
+            using (var keypad = new NumericKeypad(nudUpDown.Value))
             {
                 var result = keypad.ShowDialog(); // Show keypad
 
                 if (result == DialogResult.OK)
                 {
-                    numericUpDown1.Value = keypad.Result;
+                    nudUpDown.Value = keypad.Result;
                 }
 
                 // Always return focus to numericUpDown1
                 //  numericUpDown1.Focus();
-                nudPlantingSpeed.Value = numericUpDown1.Value;
-                Properties.Settings.Default.setPlanterSpeed = (float)numericUpDown1.Value;
+                nudPlantingSpeed.Value = nudUpDown.Value;
+                Properties.Settings.Default.setPlanterSpeed = (float)nudUpDown.Value;
                 Properties.Settings.Default.Save();
                 btnSavePlanterSettings.Focus();
             }
@@ -289,7 +282,23 @@ namespace AOGPlanterV2.OldFarmer
             //mf.SendPgnToLoop(mf.p_224.pgn);
 
             //mf.TimedMessageBox(1000, gStr.gsAutoSteerPort, "Settings Sent To Planter Monitor Module");
+            //              fas.p_224.pgn[udp.p_224.highRowWidthX10] = unchecked((byte)((int)(Properties.Settings.Default.setPlanterRowWidth * 10.0f) >> 8));
+            //            udp.p_224.pgn[udp.p_224.lowRowWidthX10] = unchecked((byte)(int)(Properties.Settings.Default.setPlanterRowWidth * 10.0f));
+            //            udp.p_224.pgn[udp.p_224.numSections] = (byte)Properties.Settings.Default.setPlanterNumRows;
+            //            udp.p_224.pgn[udp.p_224.targetSpeedX10] = (byte)(Properties.Settings.Default.setPlanterSpeed * 10.0f);
+            //udp.p_224.pgn[udp.p_224.highTargetPopulation] = unchecked((byte)((int)(Properties.Settings.Default.setPlanterTargetPopulation / 10) >> 8));
+            //udp.p_224.pgn[udp.p_224.lowTargetPopulation] = unchecked((byte)(int)(Properties.Settings.Default.setPlanterTargetPopulation / 10));
+            //udp.p_224.pgn[udp.p_224.doublesFactor] = unchecked((byte)(int)(Properties.Settings.Default.setPlanterDoublesFactor * 100.0f));
+            //if (Properties.Settings.Default.setMenu_isMetric)
+            //{
+            //    udp.p_224.pgn[udp.p_224.isMetric] = unchecked((byte)(int)1);
+            //}
+            //else
+            //{
+            //    udp.p_224.pgn[udp.p_224.isMetric] = unchecked((byte)(int)0);
+            //}
 
+            //          udp.SendPgnToLoop(fas.p_224.pgn);
         }
 
         private void SavePMSettings()
@@ -325,24 +334,24 @@ namespace AOGPlanterV2.OldFarmer
 
         private void nudPlanterDoublesFactor_clicked(object sender, EventArgs e)
         {
-            numericUpDown1.DecimalPlaces = 2;
-            numericUpDown1.Location = new Point(50, 30);
-            numericUpDown1.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
-            numericUpDown1.Minimum = new decimal(new int[] { 0, 0, 0, 0 });
-            numericUpDown1.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterDoublesFactor;
-            using (var keypad = new NumericKeypad(numericUpDown1.Value))
+            nudUpDown.DecimalPlaces = 2;
+            nudUpDown.Location = new Point(50, 30);
+            nudUpDown.Maximum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudUpDown.Minimum = new decimal(new int[] { 0, 0, 0, 0 });
+            nudUpDown.Value = (decimal)AOGPlanterV2.Properties.Settings.Default.setPlanterDoublesFactor;
+            using (var keypad = new NumericKeypad(nudUpDown.Value))
             {
                 var result = keypad.ShowDialog(); // Show keypad
 
                 if (result == DialogResult.OK)
                 {
-                    numericUpDown1.Value = keypad.Result;
+                    nudUpDown.Value = keypad.Result;
                 }
 
                 // Always return focus to numericUpDown1
                 //  numericUpDown1.Focus();
-                nudPlanterDoublesFactor.Value = numericUpDown1.Value;
-                Properties.Settings.Default.setPlanterDoublesFactor = (float)numericUpDown1.Value;
+                nudPlanterDoublesFactor.Value = nudUpDown.Value;
+                Properties.Settings.Default.setPlanterDoublesFactor = (float)nudUpDown.Value;
                 Properties.Settings.Default.Save();
                 btnSavePlanterSettings.Focus();
             }
@@ -370,5 +379,42 @@ namespace AOGPlanterV2.OldFarmer
 
         }
 
+        //private void nudUpDown_ValueChanged(object sender, EventArgs e)
+        //{
+        //    AOGPlanterV2.Properties.Settings.Default.setPlanterNumRows = numberOfRows;
+        //    btnSavePlanterSettings.Focus();
+        //}
+
+        private void numRowsClick(object sender, EventArgs e)
+        {
+            nudUpDown.DecimalPlaces = 0;
+            nudUpDown.Location = new Point(50, 30);
+            nudUpDown.Maximum = new decimal(new int[] { 32, 0, 0, 0 });
+            nudUpDown.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            nudUpDown.Value = (decimal)Properties.Settings.Default.setPlanterNumRows;
+            using (var keypad = new NumericKeypad(nudUpDown.Value))
+            {
+                var result = keypad.ShowDialog(); // Show keypad
+
+                if (result == DialogResult.OK)
+                {
+                    numRows.Value = keypad.Result;
+                }
+
+                // Always return focus to numericUpDown1
+                //  NumericKeypad.Focus();
+           //     numRows.Value = (decimal)numberOfRows;
+                Properties.Settings.Default.setPlanterNumRows = (float)numRows.Value;
+                Properties.Settings.Default.Save();
+                btnSavePlanterSettings.Focus();
+            }
+        }
+
+        private void NumRows_Changed(object sender, EventArgs e)
+        {
+            AOGPlanterV2.Properties.Settings.Default.setPlanterNumRows = (float)numRows.Value;
+            Properties.Settings.Default.Save();
+            btnSavePlanterSettings.Focus();
+        }
     }
 }

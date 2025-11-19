@@ -1010,17 +1010,6 @@ namespace AOGPlanterV2.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::AOGPlanterV2.CFeatureSettings setFeatures {
-            get {
-                return ((global::AOGPlanterV2.CFeatureSettings)(this["setFeatures"]));
-            }
-            set {
-                this["setFeatures"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool setIMU_isDualAsIMU {
             get {
@@ -1320,42 +1309,6 @@ namespace AOGPlanterV2.Properties {
             }
         }
         
-        //[global::System.Configuration.UserScopedSettingAttribute()]
-        //[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        //[global::System.Configuration.DefaultSettingValueAttribute("AGOpenGPS")]
-        //public global::AgOpenPlanterV2.TBrand setBrand_TBrand {
-        //    get {
-        //        return ((global::AgOpenPlanterV2.TBrand)(this["setBrand_TBrand"]));
-        //    }
-        //    set {
-        //        this["setBrand_TBrand"] = value;
-        //    }
-        //}
-        
-        //[global::System.Configuration.UserScopedSettingAttribute()]
-        //[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        //[global::System.Configuration.DefaultSettingValueAttribute("AGOpenGPS")]
-        //public global::AgOpenPlanterV2.HBrand setBrand_HBrand {
-        //    get {
-        //        return ((global::AgOpenPlanterV2.HBrand)(this["setBrand_HBrand"]));
-        //    }
-        //    set {
-        //        this["setBrand_HBrand"] = value;
-        //    }
-        //}
-        
-        //[global::System.Configuration.UserScopedSettingAttribute()]
-        //[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        //[global::System.Configuration.DefaultSettingValueAttribute("AGOpenGPS")]
-        //public global::AgOpenPlanterV2.WDBrand setBrand_WDBrand {
-        //    get {
-        //        return ((global::AgOpenPlanterV2.WDBrand)(this["setBrand_WDBrand"]));
-        //    }
-        //    set {
-        //        this["setBrand_WDBrand"] = value;
-        //    }
-        //}
-        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
@@ -1551,12 +1504,24 @@ namespace AOGPlanterV2.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("16")]
-        public int setVehicle_numSections {
+        public float setVehicle_numSections {
             get {
-                return ((int)(this["setVehicle_numSections"]));
+                return ((float)(this["setVehicle_numSections"]));
             }
             set {
                 this["setVehicle_numSections"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("9")]
+        public float setPlanterNumRows {
+            get {
+                return ((float)(this["setPlanterNumRows"]));
+            }
+            set {
+                this["setPlanterNumRows"] = value;
             }
         }
     }

@@ -1,10 +1,4 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
 using System.Media;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AOGPlanterV2
 {
@@ -15,21 +9,21 @@ namespace AOGPlanterV2
         //public readonly SoundPlayer sndAutoSteerOn = new SoundPlayer(Properties.Resources.SteerOn);
         //public readonly SoundPlayer sndAutoSteerOff = new SoundPlayer(Properties.Resources.SteerOff);
         //public readonly SoundPlayer sndHydLiftUp = new SoundPlayer(Properties.Resources.HydUp);
-//        public readonly SoundPlayer sndHydLiftDn = new SoundPlayer(Properties.Resources.HydDown);
-    	public readonly SoundPlayer sndDisconnected = new SoundPlayer(Properties.Resources.beepbeep);
+        //        public readonly SoundPlayer sndHydLiftDn = new SoundPlayer(Properties.Resources.HydDown);
+        public readonly SoundPlayer sndDisconnected = new SoundPlayer(Properties.Resources.beepbeep);
 
         public bool isBoundAlarming;
 
         public bool isSteerSoundOn, isTurnSoundOn, isHydLiftSoundOn;
 
-        public bool isHydLiftChange, isDisconnectedOn;	
+        public bool isHydLiftChange, isDisconnectedOn;
 
         public CSound()
         {
             //isSteerSoundOn = Properties.Settings.Default.setSound_isAutoSteerOn;
             //isHydLiftSoundOn = Properties.Settings.Default.setSound_isHydLiftOn;
             //isTurnSoundOn = Properties.Settings.Default.setSound_isUturnOn;
-			isDisconnectedOn = Properties.Settings.Default.setSound_isDisconnectedOn;
+            isDisconnectedOn = Properties.Settings.Default.setSound_isDisconnectedOn;
         }
     }
 }

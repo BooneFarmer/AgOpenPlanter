@@ -42,13 +42,14 @@
             btn_disagree = new Button();
             timer1 = new System.Windows.Forms.Timer(components);
             txtUpTime = new Label();
+            timer2 = new System.Windows.Forms.Timer(components);
             SuspendLayout();
             // 
             // lblPopulation
             // 
             lblPopulation.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             lblPopulation.AutoSize = true;
-            lblPopulation.BackColor = Color.WhiteSmoke;
+            lblPopulation.BackColor = Color.Yellow;
             lblPopulation.Font = new Font("Tahoma", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             lblPopulation.ForeColor = SystemColors.ActiveCaptionText;
             lblPopulation.Location = new Point(265, 49);
@@ -180,7 +181,7 @@
             // btnSetUp
             // 
             btnSetUp.Image = Properties.Resources.PlanterS;
-            btnSetUp.Location = new Point(186, 50);
+            btnSetUp.Location = new Point(186, 53);
             btnSetUp.Name = "btnSetUp";
             btnSetUp.Size = new Size(85, 66);
             btnSetUp.TabIndex = 9;
@@ -199,15 +200,20 @@
             btn_disagree.UseVisualStyleBackColor = true;
             btn_disagree.Click += CancelClick;
             // 
+            // timer1
+            // 
+            timer1.Tick += timer1_Tick_1;
+            // 
             // txtUpTime
             // 
             txtUpTime.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             txtUpTime.AutoSize = true;
-            txtUpTime.Font = new Font("Tahoma", 15.75F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            txtUpTime.ForeColor = SystemColors.ActiveCaptionText;
+            txtUpTime.BackColor = Color.DimGray;
+            txtUpTime.Font = new Font("Tahoma", 20.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            txtUpTime.ForeColor = SystemColors.ButtonFace;
             txtUpTime.Location = new Point(266, 129);
             txtUpTime.Name = "txtUpTime";
-            txtUpTime.Size = new Size(97, 31);
+            txtUpTime.Size = new Size(124, 39);
             txtUpTime.TabIndex = 137;
             txtUpTime.Text = "Up Time";
             txtUpTime.UseCompatibleTextRendering = true;
@@ -259,5 +265,6 @@
         public Label txtPopulation;
         public Button lblPopulation;
         public Label txtSkips;
+        private System.Windows.Forms.Timer timer2;
     }
 }

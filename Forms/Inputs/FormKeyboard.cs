@@ -1,11 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Drawing;
-using System.Globalization;
-using System.Threading;
-using System.Windows.Forms;
-
-namespace AOGPlanterV2
+﻿namespace AOGPlanterV2
 {
     public partial class FormKeyboard : Form
     {
@@ -47,12 +40,12 @@ namespace AOGPlanterV2
             //}
 
             //clear the error as user entered new values
-/*
-            if (keyboardString.Text == gStr.gsError)
-            {
-                keyboardString.Text = "";
-            }
-*/
+            /*
+                        if (keyboardString.Text == gStr.gsError)
+                        {
+                            keyboardString.Text = "";
+                        }
+            */
             //Backspace key, remove 1 char
             if (e.KeyChar == '\u0008')
             {
@@ -85,7 +78,7 @@ namespace AOGPlanterV2
             }
 
             //if its a character just add it
-            else 
+            else
             {
                 keyboardString.Text += e.KeyChar;
             }

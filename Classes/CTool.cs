@@ -1,13 +1,4 @@
-﻿
-using OpenTK.Graphics.OpenGL;
-using System;
-using System.Drawing;
-// jim test next 4
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿// jim test next 4
 
 namespace AOGPlanterV2
 {
@@ -36,13 +27,13 @@ namespace AOGPlanterV2
         public bool isToolRearFixed, isToolFrontFixed;
 
         public bool isMultiColoredSections;
-//        public string toolAttachType;
+        //        public string toolAttachType;
 
         public double hitchLength;
 
 
         //how many individual sections
-        public int numOfSections;
+        public float numOfSections;
 
         public int numSuperSection;
 
@@ -67,47 +58,47 @@ namespace AOGPlanterV2
             mf = _f;
 
             //from settings grab the vehicle specifics
-            toolWidth = Properties.Vehicle.Default.setVehicle_toolWidth;
-            toolOverlap = Properties.Vehicle.Default.setVehicle_toolOverlap;
+            //toolWidth = Properties.Vehicle.Default.setVehicle_toolWidth;
+            //toolOverlap = Properties.Vehicle.Default.setVehicle_toolOverlap;
 
-            toolOffset = Properties.Vehicle.Default.setVehicle_toolOffset;
+            //toolOffset = Properties.Vehicle.Default.setVehicle_toolOffset;
 
-            toolTrailingHitchLength = Properties.Vehicle.Default.setTool_toolTrailingHitchLength;
-            toolTankTrailingHitchLength = Properties.Vehicle.Default.setVehicle_tankTrailingHitchLength;
-            hitchLength = Properties.Vehicle.Default.setVehicle_hitchLength;
+            //toolTrailingHitchLength = Properties.Vehicle.Default.setTool_toolTrailingHitchLength;
+            //toolTankTrailingHitchLength = Properties.Vehicle.Default.setVehicle_tankTrailingHitchLength;
+            //hitchLength = Properties.Vehicle.Default.setVehicle_hitchLength;
 
-            isToolRearFixed = Properties.Vehicle.Default.setTool_isToolRearFixed;
-            isToolTrailing = Properties.Vehicle.Default.setTool_isToolTrailing;
-            isToolTBT = Properties.Vehicle.Default.setTool_isToolTBT;
-            isToolFrontFixed = Properties.Vehicle.Default.setTool_isToolFront;
+            //isToolRearFixed = Properties.Vehicle.Default.setTool_isToolRearFixed;
+            //isToolTrailing = Properties.Vehicle.Default.setTool_isToolTrailing;
+            //isToolTBT = Properties.Vehicle.Default.setTool_isToolTBT;
+            //isToolFrontFixed = Properties.Vehicle.Default.setTool_isToolFront;
 
-            lookAheadOnSetting = Properties.Vehicle.Default.setVehicle_toolLookAheadOn;
-            lookAheadOffSetting = Properties.Vehicle.Default.setVehicle_toolLookAheadOff;
-            turnOffDelay = Properties.Vehicle.Default.setVehicle_toolOffDelay;
+            //lookAheadOnSetting = Properties.Vehicle.Default.setVehicle_toolLookAheadOn;
+            //lookAheadOffSetting = Properties.Vehicle.Default.setVehicle_toolLookAheadOff;
+            //turnOffDelay = Properties.Vehicle.Default.setVehicle_toolOffDelay;
 
-            numOfSections = Properties.Vehicle.Default.setVehicle_numSections;
-            numSuperSection = numOfSections + 1;
+            numOfSections = Properties.Settings.Default.setPlanterNumRows;
+            //numSuperSection = numOfSections + 1;
 
-            minCoverage = Properties.Vehicle.Default.setVehicle_minCoverage;
-            isMultiColoredSections = Properties.Settings.Default.setColor_isMultiColorSections;
-/*
-            secColors[0] =  Properties.Settings.Default.setColor_sec01.CheckColorFor255();
-            secColors[1] =  Properties.Settings.Default.setColor_sec02.CheckColorFor255();
-            secColors[2] =  Properties.Settings.Default.setColor_sec03.CheckColorFor255();
-            secColors[3] =  Properties.Settings.Default.setColor_sec04.CheckColorFor255();
-            secColors[4] =  Properties.Settings.Default.setColor_sec05.CheckColorFor255();
-            secColors[5] =  Properties.Settings.Default.setColor_sec06.CheckColorFor255();
-            secColors[6] =  Properties.Settings.Default.setColor_sec07.CheckColorFor255();
-            secColors[7] =  Properties.Settings.Default.setColor_sec08.CheckColorFor255();
-            secColors[8] =  Properties.Settings.Default.setColor_sec09.CheckColorFor255();
-            secColors[9] =  Properties.Settings.Default.setColor_sec10.CheckColorFor255();
-            secColors[10] = Properties.Settings.Default.setColor_sec11.CheckColorFor255();
-            secColors[11] = Properties.Settings.Default.setColor_sec12.CheckColorFor255();
-            secColors[12] = Properties.Settings.Default.setColor_sec13.CheckColorFor255();
-            secColors[13] = Properties.Settings.Default.setColor_sec14.CheckColorFor255();
-            secColors[14] = Properties.Settings.Default.setColor_sec15.CheckColorFor255();
-            secColors[15] = Properties.Settings.Default.setColor_sec16.CheckColorFor255();
-*/
+            //minCoverage = Properties.Vehicle.Default.setVehicle_minCoverage;
+            //isMultiColoredSections = Properties.Settings.Default.setColor_isMultiColorSections;
+            /*
+                        secColors[0] =  Properties.Settings.Default.setColor_sec01.CheckColorFor255();
+                        secColors[1] =  Properties.Settings.Default.setColor_sec02.CheckColorFor255();
+                        secColors[2] =  Properties.Settings.Default.setColor_sec03.CheckColorFor255();
+                        secColors[3] =  Properties.Settings.Default.setColor_sec04.CheckColorFor255();
+                        secColors[4] =  Properties.Settings.Default.setColor_sec05.CheckColorFor255();
+                        secColors[5] =  Properties.Settings.Default.setColor_sec06.CheckColorFor255();
+                        secColors[6] =  Properties.Settings.Default.setColor_sec07.CheckColorFor255();
+                        secColors[7] =  Properties.Settings.Default.setColor_sec08.CheckColorFor255();
+                        secColors[8] =  Properties.Settings.Default.setColor_sec09.CheckColorFor255();
+                        secColors[9] =  Properties.Settings.Default.setColor_sec10.CheckColorFor255();
+                        secColors[10] = Properties.Settings.Default.setColor_sec11.CheckColorFor255();
+                        secColors[11] = Properties.Settings.Default.setColor_sec12.CheckColorFor255();
+                        secColors[12] = Properties.Settings.Default.setColor_sec13.CheckColorFor255();
+                        secColors[13] = Properties.Settings.Default.setColor_sec14.CheckColorFor255();
+                        secColors[14] = Properties.Settings.Default.setColor_sec15.CheckColorFor255();
+                        secColors[15] = Properties.Settings.Default.setColor_sec16.CheckColorFor255();
+            */
         }
         /*
         public void DrawTool()
@@ -362,7 +353,7 @@ namespace AOGPlanterV2
 
             GL.PopMatrix();
             */
-        }
     }
+}
 // }
 

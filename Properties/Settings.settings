@@ -248,9 +248,6 @@
     <Setting Name="setAS_guidanceLookAheadTime" Type="System.Double" Scope="User">
       <Value Profile="(Default)">2</Value>
     </Setting>
-    <Setting Name="setFeatures" Type="AgOpenPlanterV2.CFeatureSettings" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="setIMU_isDualAsIMU" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -326,15 +323,6 @@
     <Setting Name="setDisplay_customSectionColors" Type="System.String" Scope="User">
       <Value Profile="(Default)">-62208,-12299010,-16190712,-1505559,-3621034,-16712458,-7330570,-1546731,-24406,-3289866,-2756674,-538377,-134768,-4457734,-1848839,-530985</Value>
     </Setting>
-    <Setting Name="setBrand_TBrand" Type="AgOpenPlanterV2.TBrand" Scope="User">
-      <Value Profile="(Default)">AGOpenGPS</Value>
-    </Setting>
-    <Setting Name="setBrand_HBrand" Type="AgOpenPlanterV2.HBrand" Scope="User">
-      <Value Profile="(Default)">AGOpenGPS</Value>
-    </Setting>
-    <Setting Name="setBrand_WDBrand" Type="AgOpenPlanterV2.WDBrand" Scope="User">
-      <Value Profile="(Default)">AGOpenGPS</Value>
-    </Setting>
     <Setting Name="setHeadland_isSectionControlled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
@@ -383,8 +371,11 @@
     <Setting Name="planterName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="setVehicle_numSections" Type="System.Int32" Scope="User">
+    <Setting Name="setVehicle_numSections" Type="System.Single" Scope="User">
       <Value Profile="(Default)">16</Value>
+    </Setting>
+    <Setting Name="setPlanterNumRows" Type="System.Single" Scope="User">
+      <Value Profile="(Default)">9</Value>
     </Setting>
   </Settings>
 </SettingsFile>

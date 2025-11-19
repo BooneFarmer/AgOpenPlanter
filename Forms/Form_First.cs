@@ -1,9 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
-
-namespace AOGPlanterV2
+﻿namespace AOGPlanterV2
 {
     public partial class Form_First : Form
     {
@@ -88,11 +83,12 @@ namespace AOGPlanterV2
         {
             Properties.Settings.Default.setDisplay_isTermsAccepted = true;
             Properties.Settings.Default.Save();
-//            Environment.Exit(0);
+            //            Environment.Exit(0);
             this.Hide(); // Close the current form
-            Form formG = new FormAOP();
-            formG.ShowDialog();
- //           Application.Run(new FormAOP());
+            return;
+            //     Form formG = new FormAOP();
+            //     formG.ShowDialog();
+            //           Application.Run(new FormAOP());
 
             //Form fst = Application.OpenForms["FormAOP"];
             //if (fst != null)
@@ -100,12 +96,12 @@ namespace AOGPlanterV2
             //    fst.Focus();
             //    return;
             //}
-//            Form fst = this;
- //           Form formF = new FormAOP();
- //           Application.Run(new FormAOP());
- //           formF.ShowDialog();
- //           fst.Close();
-//            Environment.Exit(0);
+            //            Form fst = this;
+            //           Form formF = new FormAOP();
+            //           Application.Run(new FormAOP());
+            //           formF.ShowDialog();
+            //           fst.Close();
+            //            Environment.Exit(0);
 
 
 

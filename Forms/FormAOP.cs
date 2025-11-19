@@ -1,32 +1,14 @@
 ﻿using AOGPlanterV2.OF;
 using AOGPlanterV2.OldFarmer;
-using AOGPlanterV2.Properties;
-using OpenTK;
-using OpenTK.Graphics.OpenGL;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Media;
+using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
-using System.Windows.Forms;
 
 namespace AOGPlanterV2
 {
     public partial class FormAOP : Form
     {
+
         //To bring forward AgIO if running
         [System.Runtime.InteropServices.DllImport("User32.dll")]
         private static extern bool SetForegroundWindow(IntPtr handle);
@@ -34,6 +16,14 @@ namespace AOGPlanterV2
         [System.Runtime.InteropServices.DllImport("User32.dll")]
         private static extern bool ShowWindow(IntPtr hWind, int nCmdShow);
 
+
+        // UDP Socket
+ //       private Socket UDPSocket;
+ //       private EndPoint endPointUDP = new IPEndPoint(IPAddress.Any, 0);
+
+
+        // Data stream
+        private byte[] buffer = new byte[1024];
         public double nudNumber = 0;
         public double nudValue = 0;
         // row crop path
@@ -46,12 +36,13 @@ namespace AOGPlanterV2
 
         private AOPUDP udp;
 
+        private DateTime curTime;
         public FormAOP()
         {
 
             InitializeComponent();
 
-            udp = new AOPUDP(this);
+            //           udp = new AOPUDP(this);
             //AOPUDP.msgCount
             //jim CheckSettingsNotNull();
             // Row Crop Planter Data
@@ -124,7 +115,7 @@ namespace AOGPlanterV2
 
             // Row Crop Planter Data
             lblSkipPercent.Text = value;
- //                       rc.rowSkip = 1;
+            //                       rc.rowSkip = 1;
 
 
         }
@@ -155,8 +146,6 @@ namespace AOGPlanterV2
                 return;
             }
 
-            //
-            //            Form formG = new FormSteerGraph(this);
             Form formH = new FormSkipsChart(this);
             Form formG = new OldFarmer.FormPopChart(this);
             formG.Show(this);
@@ -229,8 +218,6 @@ namespace AOGPlanterV2
                 return;
             }
 
-            //
-            //            Form formG = new FormSteerGraph(this);
             Form formH = new FormSkipsChart(this);
             Form formG = new OldFarmer.FormPopChart(this);
             formG.Show(this);
@@ -239,6 +226,7 @@ namespace AOGPlanterV2
 
         private void on_Load(object sender, EventArgs e)
         {
+
             Form fst = Application.OpenForms["Form_First"];
             if (fst != null)
             {
@@ -248,14 +236,11 @@ namespace AOGPlanterV2
 
             Form formF = new Form_First(this);
             formF.Show(this);
-            formF.Focus();  // jim 
+            formF.Focus();
 
-            //start udp server is required
-            //            StartLoopbackServer();
-
-            AOPUDP udp = new AOPUDP(this);  // create instance
-            udp.StartUDPServer();   
-         }
+            udp = new AOPUDP(this);  // create instance
+            udp.StartUDPServer();
+        }
 
         private void clickSetup(object sender, EventArgs e)
         {
@@ -284,7 +269,33 @@ namespace AOGPlanterV2
         }
         private void Timer1_Tick(object sender, EventArgs e)
         {
-            txtUpTime.Text = DateTime.Now.ToString("HH:mm:ss");
+            txtUpTime.Text = DateTime.Now.ToString("hh:mm:ss");
+            lblPopulation.Text = rc.sumPopulation.ToString("F0");
+            lblSingulation.Text = rc.sumSingulation.ToString("F1") + "%";
+            lblSkipPercent.Text = rc.sumSkipPercent.ToString("F1") + "%";
+            lblDoublesPercent.Text = rc.sumDoublePercent.ToString("F1") + "%";
+            curTime = DateTime.Now;
+            TimeSpan diff = curTime - rc.timeDataReceived;
+
+            if (diff.TotalMilliseconds > 3500) {
+                lblPopulation.Text = "0";
+                lblSingulation.Text = "0%";
+                lblSkipPercent.Text = "0%";
+                lblDoublesPercent.Text = "0%";
+                for (int kk = 0; kk < rc.fbNumSections; kk++)
+                {
+                    rc.rcPopulation[kk] = 0;
+                    rc.rcPopulationPercent[kk] = 0;
+                    rc.rcDoubles[kk] = 0;
+                    rc.rcSkips[kk] = 0;
+                }
+                lblDisconnected.Visible = true;
+            }
+            else
+            {
+                lblDisconnected.Visible = false;
+            }
+ 
         }
 
         private int tickCount = 0;
@@ -294,14 +305,14 @@ namespace AOGPlanterV2
             tickCount++;
             txtPopulation.Text = $"Tick #{tickCount}";
             lblPopulation.Text = AOPUDP.msgCount.ToString();
-         //   OfTestDriver.Instance.UpdateRc(this);
+            //   OfTestDriver.Instance.UpdateRc(this);
         }
 
         private void TimerSim_Elapsed(object sender, ElapsedEventArgs e)
         {
             // Run background updates here
             if (Properties.Settings.Default.setPlanterSimulator_Active == true)
-            { 
+            {
                 OfTestDriver.Instance.UpdateRc(this);
             }
             // If you need to update UI controls (labels, progress bars, etc.)
@@ -312,5 +323,13 @@ namespace AOGPlanterV2
             //});
         }
 
-     }
+        private void timer1_Tick_1(object sender, EventArgs e)
+        {
+
+        }
+
+        //    }
+
+    }
 }
+

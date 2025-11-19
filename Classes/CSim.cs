@@ -1,5 +1,3 @@
-using System;
-
 namespace AOGPlanterV2
 {
     public class CSim
@@ -25,37 +23,37 @@ namespace AOGPlanterV2
 
         public void DoSimTick(double _st)
         {
-   //         steerAngle = _st;
-   //         double temp = stepDistance * Math.Tan(steerAngle * 0.0165329252) / 3.3;
-   //         headingTrue += temp;
-   //         if (headingTrue > glm.twoPI) headingTrue -= glm.twoPI;
-   //         if (headingTrue < 0) headingTrue += glm.twoPI;
+            //         steerAngle = _st;
+            //         double temp = stepDistance * Math.Tan(steerAngle * 0.0165329252) / 3.3;
+            //         headingTrue += temp;
+            //         if (headingTrue > glm.twoPI) headingTrue -= glm.twoPI;
+            //         if (headingTrue < 0) headingTrue += glm.twoPI;
 
 
-   //         //Calculate the next Lat Long based on heading and distance
-   //         CalculateNewPostionFromBearingDistance(glm.toRadians(latitude), glm.toRadians(longitude), headingTrue, stepDistance / 1000.0);
+            //         //Calculate the next Lat Long based on heading and distance
+            //         CalculateNewPostionFromBearingDistance(glm.toRadians(latitude), glm.toRadians(longitude), headingTrue, stepDistance / 1000.0);
 
-            
-   //         mf.pn.ConvertWGS84ToLocal(latitude, longitude, out mf.pn.fix.northing, out mf.pn.fix.easting);
 
-   //         mf.pn.vtgSpeed = Math.Abs(Math.Round(4 * stepDistance * 10, 1));
-   //         mf.pn.AverageTheSpeed();
+            //         mf.pn.ConvertWGS84ToLocal(latitude, longitude, out mf.pn.fix.northing, out mf.pn.fix.easting);
 
-   //         mf.pn.headingTrue = mf.pn.headingTrueDual = glm.toDegrees(headingTrue);
+            //         mf.pn.vtgSpeed = Math.Abs(Math.Round(4 * stepDistance * 10, 1));
+            //         mf.pn.AverageTheSpeed();
 
-   //         mf.pn.latitude = latitude;
-   //         mf.pn.longitude = longitude;
+            //         mf.pn.headingTrue = mf.pn.headingTrueDual = glm.toDegrees(headingTrue);
 
-   //         mf.sentenceCounter = 0;
-			//mf.UpdateFixPosition();
+            //         mf.pn.latitude = latitude;
+            //         mf.pn.longitude = longitude;
+
+            //         mf.sentenceCounter = 0;
+            //mf.UpdateFixPosition();
 
 #if OF_DELTA
-			if (Properties.Settings.Default.setPlanterSimulator_Active == true)
-			{
-				OfTestDriver.Instance.UpdateRc(mf);
-			}
+            if (Properties.Settings.Default.setPlanterSimulator_Active == true)
+            {
+                OfTestDriver.Instance.UpdateRc(mf);
+            }
 #endif // OF_DELTA
-		}
+        }
 
         //public void CalculateNewPostionFromBearingDistance(double lat, double lng, double bearing, double distance)
         //{

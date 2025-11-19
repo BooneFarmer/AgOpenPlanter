@@ -1,76 +1,391 @@
-﻿using AOGPlanterV2.OF;
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
+﻿
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static System.Net.Mime.MediaTypeNames;
-using static System.Windows.Forms.DataFormats;
 
 namespace AOGPlanterV2
 {
-   public class AOPUDP 
+    public class AOPUDP
     {
         public static UdpClient udpServer;
         private static Thread listenThread;
         private static int port = 9999; // Port to listen on
         private static AOPUDP udp;
+        private float summaryPopulation = 10000.0f;
+        private float summarySingulation = 88.8f;
+        private float summaryDoublePercent = 1.1f;
+        private float summarySkipPercent = 2.2f;
+
         private FormAOP mf;
-//        private OfRowCrop rc;  
+        //        private OfRowCrop rc;  
         public AOPUDP(FormAOP _form)
         {
             mf = _form;
         }
-//        public AOPUDP(OfRowCrop _r)
-//        {
-//            rc = _r;
-//        }
+        //        public AOPUDP(OfRowCrop _r)
+        //        {
+        //            rc = _r;
+        //        }
 
-        public void UpdateLabel(string text)
+
+        //*********************************************
+        //Row Crop data coming in
+        public class CPGN_E6
         {
-            if (mf.InvokeRequired)
+            /// <summary>
+            /// PGN - 230 - E6
+            /// Row data 1 to 8 in [6]
+            /// Row data 9 to 16 in [7]
+            /// </summary>
+            public byte[] pgn = new byte[] { 0x80, 0x81, 0x7b, 0xE6, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0xCC };
+
+
+            //where in the pgn is data
+            public int[] rcStatus = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+
+
+            // PGN 
+            int crc = 0;
+
+            public CPGN_E6()
             {
-                _ = mf.Invoke((MethodInvoker)(() => mf.txtSkips.Text = text));
+                rcStatus[3] = pgn[5] & 0b000011;  // first byte with data
+                pgn[5] = ((byte)(pgn[5] >> 2));
+                rcStatus[2] = pgn[5] & 0b000011;
+
+
 
             }
-            else
+            public void MakeCRC()
             {
-                mf.txtPopulation.Text = text;
+                crc = 0;
+                for (int i = 2; i < pgn.Length - 1; i++)
+                {
+                    crc += pgn[i];
+                }
+                pgn[pgn.Length - 1] = (byte)crc;
+            }
+
+            public void Reset()
+            {
             }
         }
-        public void StartUDPServer()
+
+        //*********************************************
+        //*********************************************
+        //Row Crop data coming in
+        public class CPGN_E5
         {
-            if (mf.InvokeRequired)
+            /// <summary>
+            /// PGN - 229 - E5
+            /// Row crop summary population, etc.
+            /// </summary>
+            public byte[] pgn = new byte[] { 0x80, 0x81, 0x7b, 0xE5, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0xCC };
+
+
+            //where in the pgn is data
+            public int[] rcSummary = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+
+
+            // PGN 
+            int crc = 0;
+
+            public CPGN_E5()
             {
-                _ = mf.Invoke((MethodInvoker)(() => mf.txtPopulation.Text = "1234"));
+                rcSummary[3] = pgn[5] & 0b000011;  // first byte with data
+                pgn[5] = ((byte)(pgn[5] >> 2));
+                rcSummary[2] = pgn[5] & 0b000011;
+         
+            }
+            public void MakeCRC()
+            {
+                crc = 0;
+                for (int i = 2; i < pgn.Length - 1; i++)
+                {
+                    crc += pgn[i];
+                }
+                pgn[pgn.Length - 1] = (byte)crc;
+            }
+
+            public void Reset()
+            {
+            }
+        }
+        //*********************************************
+        //Row Crop data coming in
+        public class CPGN_E4
+        {
+            /// <skip & doubles detail>
+            /// PGN - 228 - E4
+            /// Summary
+            public byte[] pgn = new byte[] { 0x80, 0x81, 0x7b, 0xE4, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0xCC };
+
+
+            //where in the pgn is data
+            public int[] rcSkips = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            // PGN 
+            int crc = 0;
+
+            public CPGN_E4()
+            {
+                rcSkips[1] = pgn[5] & 0b000011;  // first byte with data
+
+            }
+            public void MakeCRC()
+            {
+                crc = 0;
+                for (int i = 2; i < pgn.Length - 1; i++)
+                {
+                    crc += pgn[i];
+                }
+                pgn[pgn.Length - 1] = (byte)crc;
+            }
+
+            public void Reset()
+            {
+            }
+        }
+        //*********************************************
+        //Row Crop data coming in
+        public class CPGN_E3
+        {
+            /// <doubles detail>
+            /// PGN - 227 - E3
+            /// Summary
+            public byte[] pgn = new byte[] { 0x80, 0x81, 0x7b, 0xE3, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0xCC };
+
+
+            //where in the pgn is data
+            public int[] rcDoubles = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            // PGN 
+            int crc = 0;
+
+            public CPGN_E3()
+            {
+                rcDoubles[1] = pgn[5] & 0b000011;  // first byte with data
+
+            }
+            public void MakeCRC()
+            {
+                crc = 0;
+                for (int i = 2; i < pgn.Length - 1; i++)
+                {
+                    crc += pgn[i];
+                }
+                pgn[pgn.Length - 1] = (byte)crc;
+            }
+
+            public void Reset()
+            {
+            }
+        }
+
+        //*********************************************
+        //Row Crop data coming in
+        public class CPGN_E2
+        {
+            /// <pop by row detail>
+            /// PGN - 226 - E2
+            /// Summary
+            public byte[] pgn = new byte[] { 0x80, 0x81, 0x7b, 0xE2, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0xCC };
+
+
+            //where in the pgn is data
+            public int[] rcPopByRow = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            // PGN 
+            int crc = 0;
+
+            public CPGN_E2()
+            {
+                rcPopByRow[1] = pgn[5] & 0b000011;  // first byte with data
+
+            }
+            public void MakeCRC()
+            {
+                crc = 0;
+                for (int i = 2; i < pgn.Length - 1; i++)
+                {
+                    crc += pgn[i];
+                }
+                pgn[pgn.Length - 1] = (byte)crc;
+            }
+
+            public void Reset()
+            {
+            }
+        }
+
+        //*********************************************
+        //Row Crop data coming in
+        public class CPGN_E1
+        {
+            /// <PopByRow detail>
+            /// PGN - 225 - E1
+            /// Summary
+            public byte[] pgn = new byte[] { 0x80, 0x81, 0x7b, 0xE1, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0xCC };
+
+
+            //where in the pgn is data
+            public int[] rcPop2ByRow = { 0, 0, 0, 0, 0, 0, 0, 0 };
+
+            // PGN 
+            int crc = 0;
+
+            public CPGN_E1()
+            {
+                rcPop2ByRow[1] = pgn[5] & 0b000011;  // first byte with data
+
+            }
+            public void MakeCRC()
+            {
+                crc = 0;
+                for (int i = 2; i < pgn.Length - 1; i++)
+                {
+                    crc += pgn[i];
+                }
+                pgn[pgn.Length - 1] = (byte)crc;
+            }
+
+            public void Reset()
+            {
+            }
+        }
+
+        //*********************************************
+        //Row Crop config going out
+        public class CPGN_E0
+        {
+            /// <Arduino config>
+            /// PGN - 224 - E0
+            /// Summary
+            public byte[] pgn = new byte[] { 0x80, 0x81, 0x7b, 0xE0, 8, 0, 0, 0, 0, 0, 0, 0, 0, 0xCC };
+
+
+            //where in the pgn is data
+            public int[] rcConfig = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            public int numSections = 5;
+            public int targetSpeedX10 = 6;
+            public int highRowWidthX10 = 7;
+            public int lowRowWidthX10 = 8;
+            public int highTargetPopulation = 9;
+            public int lowTargetPopulation = 10;
+            public int doublesFactor = 11;
+            public int isMetric = 12;
+            // PGN
+            int crc = 0;
+
+            public CPGN_E0()
+            {
+                pgn[numSections] = 0;
+                pgn[targetSpeedX10] = 0;
+                pgn[lowRowWidthX10] = 0;
+                pgn[highRowWidthX10] = 0;
+                pgn[highTargetPopulation] = 0;
+                pgn[lowTargetPopulation] = 0;
+                pgn[doublesFactor] = 0;
+                pgn[isMetric] = 0;
+            }
+
+            public void MakeCRC()
+            {
+                crc = 0;
+                for (int i = 2; i < pgn.Length - 1; i++)
+                {
+                    crc += pgn[i];
+                }
+                pgn[pgn.Length - 1] = (byte)crc;
+            }
+
+            public void Reset()
+            {
+            }
+        }
+        public void UpdateLabel(string text)
+        {
+            if (udp.mf.InvokeRequired)
+            {
+                _ = udp.mf.Invoke((MethodInvoker)(() => udp.mf.txtSkips.Text = text));
 
             }
             else
             {
-                mf.txtPopulation.Text = "5678 from UDP";
-                mf.rc.rcSkips[2] = 4;
+                udp.mf.txtPopulation.Text = text;
             }
+        }
 
+
+        //*********************************************
+        //pgn instances
+
+        /// <summary>
+        /// rowCropConfig PGN - 228 - E0
+        /// </summary>
+        public CPGN_E0 p_224 = new CPGN_E0();
+        /// <summary>
+        /// rowCropData PGN - 230 - E6
+        /// </summary>
+        public CPGN_E6 rcData = new CPGN_E6();
+        /// <summary>
+        /// rowCropData PGN - 230 - E6
+        /// </summary>
+        public CPGN_E5 p_229 = new CPGN_E5();
+
+        /// <summary>
+        /// rowCropSkipData PGN - 228 - E4
+        /// </summary>
+        public CPGN_E4 p_228 = new CPGN_E4();
+
+        /// <summary>
+        /// rowCropDoublesByRow PGN - 227 - E3
+        /// </summary>
+        public CPGN_E3 p_227 = new CPGN_E3();
+
+        /// <summary>
+        /// rowCropPopByRow PGN - 226 - E2
+        /// </summary>
+        public CPGN_E2 p_226 = new CPGN_E2();
+
+        /// <summary>
+        /// rowCropPopByRow PGN - 225 - E1
+        /// </summary>
+        public CPGN_E1 p_225 = new CPGN_E1();
+
+
+        public void StartUDPServer()
+        {
+            /* //This area used foe tresting
+          if (mf.InvokeRequired)
+          {
+              _ = mf.Invoke((MethodInvoker)(() => mf.txtPopulation.Text = "1234"));
+
+          }
+          else
+          {
+              mf.txtPopulation.Text = "5678 from UDP"; // this is displayed
+              udp.mf.rc.rcSkips[2] = 3;
+          }
+          */
             udpServer = new UdpClient(port);
             listenThread = new Thread(new ThreadStart(ListenForMessages));
             listenThread.Start();
 
-    //        udpServer.Close(); // where would I put this?
+            //        udpServer.Close(); // where would I put this?
         }
         public static int msgCount = 0;
 
-        private  void ListenForMessages()
+        private void ListenForMessages()
         {
+            //            udp.mf.rc.rcSkips[4] = 5;  // for testing.  This works
             while (true)
             {
                 msgCount += 1;
-                UpdateLabel("XOXO");
+                //                UpdateLabel("XOXO");  // this test works
+                //                udp.mf.rc.rcSkips[3] = 4;
                 try
                 {
                     // Listen for UDP packets on the given port
@@ -78,296 +393,299 @@ namespace AOGPlanterV2
                     byte[] data = udpServer.Receive(ref endPoint);
                     string receivedData = Encoding.UTF8.GetString(data);
                     msgCount += 1;
-                    UpdateLabel("123");  // doesn't work
-                    mf.rc.rcSkips[3] = 4;
+                    //                    UpdateLabel("123");  // works if AgOpenGPS is started
+                    mf.rc.rcSkips[5] = 6;  // likewise
 
-                    //        udp.mf.UpdateLabel("123"); //"; // receivedData;
-                    //                    Console.WriteLine($"Received: {receivedData} from {endPoint.Address}:{endPoint.Port}");
-                    //if (mf != null)
-                    //{ 
-                   //if (mf.InvokeRequired)
-                   // {
-                   //         mf.Invoke((MethodInvoker)(() => mf.txtPopulation.Text = "OH!"));  //Population.Text = text));
-                   // }
-
-                       if (data.Length > 4 && data[0] == 0x80 && data[1] == 0x81)
-            {
-                int Length = Math.Max((data[4]) + 5, 5);
-                if (data.Length > Length)
-                {
-                    byte CK_A = 0;
-                    for (int j = 2; j < Length; j++)
+                    if (data.Length > 4 && data[0] == 0x80 && data[1] == 0x81)
                     {
-                        CK_A += data[j];
+                        int Length = Math.Max((data[4]) + 5, 5);
+                        if (data.Length > Length)
+                        {
+                            byte CK_A = 0;
+                            for (int j = 2; j < Length; j++)
+                            {
+                                CK_A += data[j];
+                            }
+
+                            if (data[Length] != (byte)CK_A)
+                            {
+                                return;
+                            }
+                        }
+                        else
+                        {
+                            return;
+                        }
+                        switch (data[3])
+                        {
+                            //// Feedback from Arduino Planter Monitor
+
+                            case 224:
+                                {
+                                    mf.rc.fbNumSections = (int)data[5];
+                                    mf.rc.fbTargetSpeed = (float)data[6] / 10.0f;
+                                    mf.rc.fbRowWidth = ((float)(data[7] << 8) + (float)data[8]) * .1f; // + (float)data[8]; // ; mc.actualSteerAngleChart = (Int16)((data[6] << 8) + data[5]);
+                                    mf.rc.fbTargetPopulation = ((int)(data[9] << 8) + (float)data[10]) * 10.0f;
+                                    mf.rc.fbDoublesFactor = (float)data[11] / 100.0f;
+
+                                    if (data[12] == 1)
+                                    {
+                                        mf.rc.fbIsMetric = true;
+                                    }
+                                    else
+                                    {
+                                        mf.rc.fbIsMetric = false;
+                                    }
+                                    if (mf.rc.fbNumSections != Properties.Settings.Default.setPlanterNumRows ||
+                                            mf.rc.fbTargetSpeed != Properties.Settings.Default.setPlanterSpeed ||
+                                            Math.Abs(mf.rc.fbRowWidth - Properties.Settings.Default.setPlanterRowWidth) > .001 ||
+                                            mf.rc.fbTargetPopulation != Properties.Settings.Default.setPlanterTargetPopulation ||
+                                            mf.rc.fbDoublesFactor != Properties.Settings.Default.setPlanterDoublesFactor ||
+                                            mf.rc.fbIsMetric != Properties.Settings.Default.setMenu_isMetric)
+                                    {
+
+                                        // sending data
+
+                                        p_224.pgn[p_224.highRowWidthX10] = unchecked((byte)((int)(Properties.Settings.Default.setPlanterRowWidth * 10.0f) >> 8));
+                                        p_224.pgn[p_224.lowRowWidthX10] = unchecked((byte)(int)(Properties.Settings.Default.setPlanterRowWidth * 10.0f));
+                                        p_224.pgn[p_224.numSections] = (byte)Properties.Settings.Default.setPlanterNumRows;
+                                        p_224.pgn[p_224.targetSpeedX10] = (byte)(Properties.Settings.Default.setPlanterSpeed * 10.0f);
+                                        p_224.pgn[p_224.highTargetPopulation] = unchecked((byte)((int)(Properties.Settings.Default.setPlanterTargetPopulation / 10) >> 8));
+                                        p_224.pgn[p_224.lowTargetPopulation] = unchecked((byte)(int)(Properties.Settings.Default.setPlanterTargetPopulation / 10));
+                                        p_224.pgn[p_224.doublesFactor] = unchecked((byte)(int)(Properties.Settings.Default.setPlanterDoublesFactor * 100.0f));
+                                        if (Properties.Settings.Default.setMenu_isMetric)
+                                        {
+                                            p_224.pgn[p_224.isMetric] = unchecked((byte)(int)1);
+                                        }
+                                        else
+                                        {
+                                            p_224.pgn[p_224.isMetric] = unchecked((byte)(int)0);
+                                        }
+
+                                        SendPgnToLoop(p_224.pgn);
+
+                                        //     TimedMessageBox(2000, gStr.gsAutoSteerPort, "Settings Sent To Planter Monitor Module");
+                                    } // end case
+                                    break;
+                                }
+
+                            //// Population by row ////
+                            case 225:
+                                {
+                                    int popIndex = 7;
+                                    for (int i = 5; i < 13; i++)
+                                    {
+                                        popIndex += 1;
+                                        //	if (data[i] < 0) data[i] = 250;  // occurs with overflow situation
+                                        //	rc.rcPopulationPercent[popIndex] = (data[i] * 100000f / (float.Parse(Properties.Settings.Default.setPlanterTargetPopulation))) - 100f;
+                                        mf.rc.rcPopulation[popIndex] = data[i] * 1000f;
+                                        mf.rc.rcPopulationPercent[popIndex] = (data[i] * 100000f / Properties.Settings.Default.setPlanterTargetPopulation) - 100f;
+                                        if (mf.rc.rcPopulationPercent[popIndex] < -15f) mf.rc.rcPopulationPercent[popIndex] = -15f;
+                                        if (mf.rc.rcPopulationPercent[popIndex] > 115f) mf.rc.rcPopulationPercent[popIndex] = 115f;
+
+                                    }
+                                    break;
+                                }
+
+
+                            //// Population by row ////
+                            case 226:
+                                {
+                                    int popIndex = -1;
+                                    for (int i = 5; i < 13; i++)
+                                    {
+                                        popIndex += 1;
+                                        //	if (data[i] < 0) data[i] = 250;  // occurs with overflow situation
+                                        mf.rc.rcPopulation[popIndex] = data[i] * 1000f;
+                                        mf.rc.rcPopulationPercent[popIndex] = (data[i] * 100000f / Properties.Settings.Default.setPlanterTargetPopulation) - 100f;
+                                        if (mf.rc.rcPopulationPercent[popIndex] < -15f) mf.rc.rcPopulationPercent[popIndex] = -15f;
+                                        if (mf.rc.rcPopulationPercent[popIndex] > 115f) mf.rc.rcPopulationPercent[popIndex] = 115f;
+                                    }
+                                    break;
+                                }
+                            //// Doubles by row ////
+                            case 227:
+                                {
+
+                                    int doubleIndex = -2;
+
+                                    for (int i = 5; i < 13; i++)
+                                    {
+                                        doubleIndex += 3;
+                                        mf.rc.rcDoubles[doubleIndex] = (byte)data[i] & 0b000111;
+                                        data[i] = ((byte)(data[i] >> 4));
+                                        doubleIndex -= 1;
+                                        mf.rc.rcDoubles[doubleIndex] = (byte)data[i] & 0b000111;
+                                    }
+                                    break;
+                                }
+                            //// Skips by row ////
+                            case 228:
+                                {
+                                    int skipIndex = -2;
+                                    for (int i = 5; i < 13; i++)
+                                    {
+                                        skipIndex += 3;
+                                        mf.rc.rcSkips[skipIndex] = (byte)data[i] & 0b000111;
+                                        data[i] = ((byte)(data[i] >> 4));
+                                        skipIndex -= 1;
+                                        mf.rc.rcSkips[skipIndex] = (byte)data[i] & 0b000111;
+                                    }
+                                    break;
+                                }
+                            //// Row crop summary ////
+                            case 229:
+                                {
+                                    summaryPopulation = (Int16)((data[6] << 8) + data[5]);
+                                    summaryPopulation *= 10;
+                                    summarySingulation = (Int16)((data[12] << 8) + data[11]);
+                                    summarySingulation = summarySingulation / 10;
+                                    summarySkipPercent = (Int16)((data[8] << 8) + data[7]);
+                                    summarySkipPercent = summarySkipPercent / 10;
+                                    summaryDoublePercent = (Int16)((data[10] << 8) + data[9]);
+                                    summaryDoublePercent = summaryDoublePercent / 10;
+                                    mf.rc.sumSkipPercent = summarySkipPercent;
+                                    mf.rc.sumDoublePercent = summaryDoublePercent;
+                                    mf.rc.sumPopulation = summaryPopulation;
+                                    mf.rc.sumSingulation = summarySingulation;
+                                    mf.rc.timeDataReceived = DateTime.Now;
+                                    break;
+                                }
+                                ////// Row crop status by row -- sets color ////
+                                //case 230:   // test by Jim to catch row sensor state 16 rows stored in data[5] and data[6]
+                                //    {
+
+
+                                //        int jptest = 0;
+                                //        int numToTest = 4;
+                                //        if (tool.numOfSections < 4) numToTest = tool.numOfSections;
+                                //        for (int i = 0; i < numToTest; i++)
+                                //        {
+                                //            jptest = data[5];
+                                //            jptest = (byte)data[5] & 0b000011;
+                                //            if (jptest == 0)
+                                //            {
+                                //                udp.mf.rc.SetStateNormal(i);
+                                //            }
+                                //            else if (jptest == 1)
+                                //            {
+                                //                udp.mf.rc.SetStateOut(i);
+                                //                if (Properties.Settings.Default.setPlanterAlarm_Active) sounds.sndDisconnected.Play();
+                                //            }
+                                //            else if (jptest == 2)
+                                //            {
+                                //                udp.mf.rc.SetStateSkip(i);
+                                //            }
+                                //            else if (jptest == 3)
+                                //            {
+                                //                udp.mf.rc.SetStateDouble(i);
+                                //            }
+
+                                //            data[5] = ((byte)(data[5] >> 2));
+                                //        }
+
+                                //        numToTest = 8;
+                                //        if (tool.numOfSections < 8) numToTest = tool.numOfSections;
+                                //        for (int i = 4; i < numToTest; i++)
+                                //        {
+                                //            jptest = data[6] & 0b000011;
+                                //            if (jptest == 0)
+                                //            {
+                                //                udp.mf.rc.SetStateNormal(i);
+                                //            }
+                                //            else if (jptest == 1)
+                                //            {
+                                //                udp.mf.rc.SetStateOut(i);
+                                //                if (Properties.Settings.Default.setPlanterAlarm_Active) sounds.sndDisconnected.Play();
+                                //            }
+                                //            else if (jptest == 2)
+                                //            {
+                                //                udp.mf.rc.SetStateSkip(i);
+                                //            }
+                                //            else if (jptest == 3)
+                                //            {
+                                //                udp.mf.rc.SetStateDouble(i);
+                                //            }
+
+                                //            data[6] = ((byte)(data[6] >> 2));
+                                //        }
+
+                                //        numToTest = 12;
+                                //        if (tool.numOfSections < 12) numToTest = tool.numOfSections;
+                                //        for (int i = 8; i < numToTest; i++)
+                                //        {
+                                //            jptest = data[7] & 0b000011;
+                                //            if (jptest == 0)
+                                //            {
+                                //                udp.mf.rc.SetStateNormal(i);
+                                //            }
+                                //            else if (jptest == 1)
+                                //            {
+                                //                udp.mf.rc.SetStateOut(i);
+                                //                if (Properties.Settings.Default.setPlanterAlarm_Active) sounds.sndDisconnected.Play();
+                                //            }
+                                //            else if (jptest == 2)
+                                //            {
+                                //                udp.mf.rc.SetStateSkip(i);
+                                //            }
+                                //            else if (jptest == 3)
+                                //            {
+                                //                udp.mf.rc.SetStateDouble(i);
+                                //            }
+
+                                //            data[7] = ((byte)(data[7] >> 2));
+                                //        }
+
+                                //        numToTest = 16;
+                                //        if (tool.numOfSections < 16) numToTest = tool.numOfSections;
+                                //        for (int i = 12; i < numToTest; i++)
+                                //        {
+                                //            jptest = data[8] & 0b000011;
+                                //            if (jptest == 0)
+                                //            {
+                                //                udp.mf.rc.SetStateNormal(i);
+                                //            }
+                                //            else if (jptest == 1)
+                                //            {
+                                //                udp.mf.rc.SetStateOut(i);
+                                //                if (Properties.Settings.Default.setPlanterAlarm_Active) sounds.sndDisconnected.Play();
+                                //            }
+                                //            else if (jptest == 2)
+                                //            {
+                                //                udp.mf.rc.SetStateSkip(i);
+                                //            }
+                                //            else if (jptest == 3)
+                                //            {
+                                //                udp.mf.rc.SetStateDouble(i);
+                                //            }
+
+                                //            data[8] = ((byte)(data[8] >> 2));
+                                //        }
+
+                                //        udp.mf.rc.fbFeedbackCounter = (int)data[9];
+
+                                //        break;
+
+                                //    }
+                        }
+
                     }
-
-                    if (data[Length] != (byte)CK_A)
-                    {
-                        return;
-                    }
-                }
-                else
-                {
-                    return;
-                }
-/*                switch (data[3])
-                {
-                    //// Feedback from Arduino Planter Monitor
-/*
-//                    case 224:
-//                        {
-//                            rc.fbNumSections = (int)data[5];
-//                            rc.fbTargetSpeed = (float)data[6] / 10.0f;
-//                            rc.fbRowWidth = ((float)(data[7] << 8) + (float)data[8]) * .1f; // + (float)data[8]; // ; mc.actualSteerAngleChart = (Int16)((data[6] << 8) + data[5]);
-//                            rc.fbTargetPopulation = ((int)(data[9] << 8) + (float)data[10]) * 10.0f;
-//                            rc.fbDoublesFactor = (float)data[11] / 100.0f;
-
-//                            if (data[12] == 1)
-//                            {
-//                                rc.fbIsMetric = true;
-//                            }
-//                            else
-//                            {
-//                                rc.fbIsMetric = false;
-//                            }
-//                            if (rc.fbNumSections != Properties.Vehicle.Default.setVehicle_numSections ||
-//                                    rc.fbTargetSpeed != Properties.Settings.Default.setPlanterSpeed ||
-//                                    Math.Abs(rc.fbRowWidth - Properties.Settings.Default.setPlanterRowWidth) > .001 ||
-//                                    rc.fbTargetPopulation != Properties.Settings.Default.setPlanterTargetPopulation ||
-//                                    rc.fbDoublesFactor != Properties.Settings.Default.setPlanterDoublesFactor ||
-//                                    rc.fbIsMetric != Properties.Settings.Default.setMenu_isMetric)
-//                            {
-///* sending data
-//                                p_224.pgn[p_224.highRowWidthX10] = unchecked((byte)((int)(Properties.Settings.Default.setPlanterRowWidth * 10.0f) >> 8));
-//                                p_224.pgn[p_224.lowRowWidthX10] = unchecked((byte)(int)(Properties.Settings.Default.setPlanterRowWidth * 10.0f));
-//                                p_224.pgn[p_224.numSections] = (byte)Properties.Vehicle.Default.setVehicle_numSections;
-//                                p_224.pgn[p_224.targetSpeedX10] = (byte)(Properties.Settings.Default.setPlanterSpeed * 10.0f);
-//                                p_224.pgn[p_224.highTargetPopulation] = unchecked((byte)((int)(Properties.Settings.Default.setPlanterTargetPopulation / 10) >> 8));
-//                                p_224.pgn[p_224.lowTargetPopulation] = unchecked((byte)(int)(Properties.Settings.Default.setPlanterTargetPopulation / 10));
-//                                p_224.pgn[p_224.doublesFactor] = unchecked((byte)(int)(Properties.Settings.Default.setPlanterDoublesFactor * 100.0f));
-//                                if (Properties.Settings.Default.setMenu_isMetric)
-//                                {
-//                                    p_224.pgn[p_224.isMetric] = unchecked((byte)(int)1);
-//                                }
-//                                else
-//                                {
-//                                    p_224.pgn[p_224.isMetric] = unchecked((byte)(int)0);
-//                                }
-
-//                                SendPgnToLoop(p_224.pgn);
-
-//                           //     TimedMessageBox(2000, gStr.gsAutoSteerPort, "Settings Sent To Planter Monitor Module");
-//                            } // end case
-//                            break;
-//                        }
-                    //// Population by row ////
-                    case 225:
-                        {
-                            int popIndex = 7;
-                            for (int i = 5; i < 13; i++)
-                            {
-                                popIndex += 1;
-                                //								if (data[i] < 0) data[i] = 250;  // occurs with overflow situation
-                                //								rc.rcPopulationPercent[popIndex] = (data[i] * 100000f / (float.Parse(Properties.Settings.Default.setPlanterTargetPopulation))) - 100f;
-                                rc.rcPopulation[popIndex] = data[i] * 1000f;
-                                rc.rcPopulationPercent[popIndex] = (data[i] * 100000f / Properties.Settings.Default.setPlanterTargetPopulation) - 100f;
-                                if (rc.rcPopulationPercent[popIndex] < -15f) rc.rcPopulationPercent[popIndex] = -15f;
-                                if (rc.rcPopulationPercent[popIndex] > 115f) rc.rcPopulationPercent[popIndex] = 115f;
-
-                            }
-                            break;
-                        }
-
-
-                    //// Population by row ////
-                    case 226:
-                        {
-                            int popIndex = -1;
-                            for (int i = 5; i < 13; i++)
-                            {
-                                popIndex += 1;
-                                //								if (data[i] < 0) data[i] = 250;  // occurs with overflow situation
-                                rc.rcPopulation[popIndex] = data[i] * 1000f;
-                                rc.rcPopulationPercent[popIndex] = (data[i] * 100000f / Properties.Settings.Default.setPlanterTargetPopulation) - 100f;
-                                if (rc.rcPopulationPercent[popIndex] < -15f) rc.rcPopulationPercent[popIndex] = -15f;
-                                if (rc.rcPopulationPercent[popIndex] > 115f) rc.rcPopulationPercent[popIndex] = 115f;
-                            }
-                            break;
-                        }
-                    //// Doubles by row ////
-                    case 227:
-                        {
-
-                            int doubleIndex = -2;
-
-                            for (int i = 5; i < 13; i++)
-                            {
-                                doubleIndex += 3;
-                                rc.rcDoubles[doubleIndex] = (byte)data[i] & 0b000111;
-                                data[i] = ((byte)(data[i] >> 4));
-                                doubleIndex -= 1;
-                                rc.rcDoubles[doubleIndex] = (byte)data[i] & 0b000111;
-                            }
-                            break;
-                        }
-                    //// Skips by row ////
-                    case 228:
-                        {
-                            int skipIndex = -2;
-                            for (int i = 5; i < 13; i++)
-                            {
-                                skipIndex += 3;
-                                rc.rcSkips[skipIndex] = (byte)data[i] & 0b000111;
-                                data[i] = ((byte)(data[i] >> 4));
-                                skipIndex -= 1;
-                                rc.rcSkips[skipIndex] = (byte)data[i] & 0b000111;
-                            }
-                            break;
-                        }
-                    //// Row crop summary ////
-                    case 229:
-                        {
-                            population = (Int16)((data[6] << 8) + data[5]);
-                            population *= 10;
-                            singulation = (Int16)((data[12] << 8) + data[11]);
-                            singulation = singulation / 10;
-                            skipPercent = (Int16)((data[8] << 8) + data[7]);
-                            skipPercent = skipPercent / 10;
-                            doublesPercent = (Int16)((data[10] << 8) + data[9]);
-                            doublesPercent = doublesPercent / 10;
-                            break;
-                        }
-                    //// Row crop status by row -- sets color ////
-                    case 230:   // test by Jim to catch row sensor state 16 rows stored in data[5] and data[6]
-                          {
-
-
-                            int jptest = 0;
-                            int numToTest = 4;
-                            if (tool.numOfSections < 4) numToTest = tool.numOfSections;
-                            for (int i = 0; i < numToTest; i++)
-                             {
-                                jptest = data[5];
-                                jptest = (byte)data[5] & 0b000011;
-                                if (jptest == 0)
-                                {
-                                    rc.SetStateNormal(i);
-                                }
-                                else if (jptest == 1)
-                                {
-                                    rc.SetStateOut(i);
-                                    if (Properties.Settings.Default.setPlanterAlarm_Active) sounds.sndDisconnected.Play();
-                                }
-                                else if (jptest == 2)
-                                {
-                                    rc.SetStateSkip(i);
-                                }
-                                else if (jptest == 3)
-                                {
-                                    rc.SetStateDouble(i);
-                                }
-
-                                data[5] = ((byte)(data[5] >> 2));
-                            }
-
-                            numToTest = 8;
-                            if (tool.numOfSections < 8) numToTest = tool.numOfSections;
-                            for (int i = 4; i < numToTest; i++)
-                            {
-                                jptest = data[6] & 0b000011;
-                                if (jptest == 0)
-                                {
-                                    rc.SetStateNormal(i);
-                                }
-                                else if (jptest == 1)
-                                {
-                                    rc.SetStateOut(i);
-                                    if (Properties.Settings.Default.setPlanterAlarm_Active) sounds.sndDisconnected.Play();
-                                }
-                                else if (jptest == 2)
-                                {
-                                    rc.SetStateSkip(i);
-                                }
-                                else if (jptest == 3)
-                                {
-                                    rc.SetStateDouble(i);
-                                }
-
-                                data[6] = ((byte)(data[6] >> 2));
-                            }
-
-                            numToTest = 12;
-                            if (tool.numOfSections < 12) numToTest = tool.numOfSections;
-                            for (int i = 8; i < numToTest; i++)
-                            {
-                                jptest = data[7] & 0b000011;
-                                if (jptest == 0)
-                                {
-                                    rc.SetStateNormal(i);
-                                }
-                                else if (jptest == 1)
-                                {
-                                    rc.SetStateOut(i);
-                                    if (Properties.Settings.Default.setPlanterAlarm_Active) sounds.sndDisconnected.Play();
-                                }
-                                else if (jptest == 2)
-                                {
-                                    rc.SetStateSkip(i);
-                                }
-                                else if (jptest == 3)
-                                {
-                                    rc.SetStateDouble(i);
-                                }
-
-                                data[7] = ((byte)(data[7] >> 2));
-                            }
-
-                            numToTest = 16;
-                            if (tool.numOfSections < 16) numToTest = tool.numOfSections;
-                            for (int i = 12; i < numToTest; i++)
-                            {
-                                jptest = data[8] & 0b000011;
-                                if (jptest == 0)
-                                {
-                                    rc.SetStateNormal(i);
-                                }
-                                else if (jptest == 1)
-                                {
-                                    rc.SetStateOut(i);
-                                    if (Properties.Settings.Default.setPlanterAlarm_Active) sounds.sndDisconnected.Play();
-                                }
-                                else if (jptest == 2)
-                                {
-                                    rc.SetStateSkip(i);
-                                }
-                                else if (jptest == 3)
-                                {
-                                    rc.SetStateDouble(i);
-                                }
-
-                                data[8] = ((byte)(data[8] >> 2));
-                            }
-
-                            rc.fbFeedbackCounter = (int)data[9];
-
-                            break;
-
-                          }
-                    }
-*/
-                       }
                 }
                 catch (Exception ex)
                 {
                     //                    Console.WriteLine($"Error receiving message: {ex.Message}");
                 }
-
             }
         }
-        
-                  // Call to update the label safely
+        //    }
+        public void SendPgnToLoop(byte[] byteData)
+        {
+            //UdpClient client = new UdpClient();
+            udpServer.Send(byteData, byteData.Length, "192.168.1.190", 8888);
+        }
 
-   }
+    }
 }
+
 
 

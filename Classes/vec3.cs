@@ -1,7 +1,5 @@
 ﻿//Please, if you use this, share the improvements
 
-using System;
-
 namespace AgOpenPlanterV2
 {
     public struct vecRGB
@@ -25,7 +23,7 @@ namespace AgOpenPlanterV2
     /// </summary>
     ///
 
-        public struct vec3
+    public struct vec3
     {
         public double easting;
         public double northing;

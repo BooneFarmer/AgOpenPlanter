@@ -1,14 +1,9 @@
-﻿using AOGPlanterV2;
-using System;
-using System.Drawing;
-using System.Globalization;
-using System.Threading;
-using System.Windows.Forms;
+﻿using System.Globalization;
 
 namespace AOGPlanterV2
-    
+
 {
-    public partial class FormNumeric     : Form
+    public partial class FormNumeric : Form
     {
         private readonly double max;
         private readonly double min;
@@ -38,7 +33,7 @@ namespace AOGPlanterV2
             keypad1.Focus();
         }
 
-//        private void RegisterKeypad1_ButtonPressed(object sender, KeyPressEventArgs e)
+        //        private void RegisterKeypad1_ButtonPressed(object sender, KeyPressEventArgs e)
         private void RegisterKeypad1_ButtonPressed(object sender, KeyPressEventArgs e)
         {
             if (isFirstKey)
